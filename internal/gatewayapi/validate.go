@@ -91,7 +91,7 @@ func (t *Translator) validateBackendRefGroup(backendRef *gwapiv1a2.BackendRef, p
 }
 
 func (t *Translator) validateBackendRefKind(backendRef *gwapiv1a2.BackendRef, parentRef *RouteParentContext, route RouteContext) bool {
-	if backendRef.Kind != nil && *backendRef.Kind != KindService && *backendRef.Kind != KindServiceImport && *backendRef.Kind != egv1a1.KindBackend {
+	if backendRef.Kind != nil && *backendRef.Kind != KindService && *backendRef.Kind != KindServiceImport && *backendRef.Kind != egv1a1.KindBackend && *backendRef.Kind != egv1a1.KindVirtualBackend {
 		routeStatus := GetRouteStatus(route)
 		status.SetRouteStatusCondition(routeStatus,
 			parentRef.routeParentStatusIdx,
@@ -178,7 +178,7 @@ func (t *Translator) validateBackendNamespace(backendRef *gwapiv1a2.BackendRef, 
 
 func (t *Translator) validateBackendPort(backendRef *gwapiv1a2.BackendRef, parentRef *RouteParentContext, route RouteContext) bool {
 	// Envoy Gateway Backends do not require a port in the backend ref
-	if backendRef != nil && backendRef.Kind != nil && string(*backendRef.Kind) == egv1a1.KindBackend {
+	if backendRef != nil && backendRef.Kind != nil && (string(*backendRef.Kind) == egv1a1.KindBackend || string(*backendRef.Kind) == egv1a1.KindVirtualBackend) {
 		return true
 	}
 	if backendRef.Port == nil {

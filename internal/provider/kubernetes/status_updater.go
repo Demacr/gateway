@@ -290,6 +290,12 @@ func isStatusEqual(objA, objB interface{}) bool {
 				return true
 			}
 		}
+	case *egv1a1.VirtualBackend:
+		if b, ok := objB.(*egv1a1.VirtualBackend); ok {
+			if cmp.Equal(a.Status, b.Status, opts) {
+				return true
+			}
+		}
 	}
 
 	return false

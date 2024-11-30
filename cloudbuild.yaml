@@ -1,0 +1,16 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - build
+      - "-f"
+      - tools/docker/envoy-gateway/Dockerfile
+      - "--build-arg"
+      - "TARGETPLATFORM=bin/linux/amd64"
+      - "-t"
+      - "us-east1-docker.pkg.dev/prj-cs-shared-private-4170/cs/shared/gateway:v1.1.0-dk"
+      - "."
+    waitFor:
+      - "-"
+images:
+  - "us-east1-docker.pkg.dev/prj-cs-shared-private-4170/cs/shared/gateway:v1.1.0-dk"
+# gcloud builds submit --timeout=900 --machine-type=e2-highcpu-32 --project=prj-cs-shared-private-4170

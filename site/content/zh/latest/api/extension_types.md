@@ -29,6 +29,7 @@ API group.
 - [SecurityPolicy](#securitypolicy)
 - [SecurityPolicyList](#securitypolicylist)
 - [VirtualBackend](#virtualbackend)
+- [VirtualBackendList](#virtualbackendlist)
 
 
 
@@ -3740,7 +3741,8 @@ _Appears in:_
 
 VirtualBackend defines the configuration for direct response.
 
-
+_Appears in:_
+- [VirtualBackendList](#virtualbackendlist)
 
 | Field | Type | Required | Description |
 | ---   | ---  | ---      | ---         |
@@ -3748,6 +3750,23 @@ VirtualBackend defines the configuration for direct response.
 | `kind` | _string_ | |`VirtualBackend`
 | `metadata` | _[ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.29/#objectmeta-v1-meta)_ |  true  | Refer to Kubernetes API documentation for fields of `metadata`. |
 | `spec` | _[VirtualBackendSpec](#virtualbackendspec)_ |  true  | Spec defines desired state of VirtualBackend. |
+| `status` | _[VirtualBackendStatus](#virtualbackendstatus)_ |  true  | Status defines the current status of SecurityPolicy. |
+
+
+#### VirtualBackendList
+
+
+
+VirtualBackendList contains a list of VirtualBackend resources.
+
+
+
+| Field | Type | Required | Description |
+| ---   | ---  | ---      | ---         |
+| `apiVersion` | _string_ | |`gateway.envoyproxy.io/v1alpha1`
+| `kind` | _string_ | |`VirtualBackendList`
+| `metadata` | _[ListMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.29/#listmeta-v1-meta)_ |  true  | Refer to Kubernetes API documentation for fields of `metadata`. |
+| `items` | _[VirtualBackend](#virtualbackend) array_ |  true  |  |
 
 
 #### VirtualBackendSpec
@@ -3761,9 +3780,23 @@ _Appears in:_
 
 | Field | Type | Required | Description |
 | ---   | ---  | ---      | ---         |
-| `body` | _integer_ |  false  | Body contains data which gateway returns in direct response. |
+| `body` | _integer array_ |  false  | Body contains data which gateway returns in direct response. |
 | `statusCode` | _[StatusCode](#statuscode)_ |  true  | StatusCode defines HTTP response status code of direct response. Default value is 200. |
 | `responseHeaders` | _object (keys:[ResponseHeader](#responseheader), values:string)_ |  false  | ResponseHeaders defines Header:Value map of additional headers to response. |
+
+
+#### VirtualBackendStatus
+
+
+
+VirtualBackendStatus defines the state of virtualbackend
+
+_Appears in:_
+- [VirtualBackend](#virtualbackend)
+
+| Field | Type | Required | Description |
+| ---   | ---  | ---      | ---         |
+| `conditions` | _[Condition](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.29/#condition-v1-meta) array_ |  false  | Conditions describe the current conditions of the Backend. |
 
 
 #### Wasm

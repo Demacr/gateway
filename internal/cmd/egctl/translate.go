@@ -285,6 +285,7 @@ func translateGatewayAPIToIR(resources *gatewayapi.Resources) (*gatewayapi.Trans
 		EndpointRoutingDisabled: true,
 		EnvoyPatchPolicyEnabled: true,
 		BackendEnabled:          true,
+		VirtualBackendEnabled:   true,
 	}
 
 	// Fix the services in the resources section so that they have an IP address - this prevents nasty
@@ -313,6 +314,7 @@ func translateGatewayAPIToGatewayAPI(resources *gatewayapi.Resources) (gatewayap
 		EndpointRoutingDisabled: true,
 		EnvoyPatchPolicyEnabled: true,
 		BackendEnabled:          true,
+		VirtualBackendEnabled:   true,
 	}
 	gRes, _ := gTranslator.Translate(resources)
 	// Update the status of the GatewayClass based on EnvoyProxy validation
@@ -346,6 +348,7 @@ func translateGatewayAPIToXds(dnsDomain string, resourceType string, resources *
 		EndpointRoutingDisabled: true,
 		EnvoyPatchPolicyEnabled: true,
 		BackendEnabled:          true,
+		VirtualBackendEnabled:   true,
 	}
 	gRes, _ := gTranslator.Translate(resources)
 

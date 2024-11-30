@@ -131,6 +131,7 @@ rules:
   - securitypolicies
   - envoyextensionpolicies
   - backends
+  - virtualbackends
   verbs:
   - get
   - list
@@ -144,6 +145,7 @@ rules:
   - securitypolicies/status
   - envoyextensionpolicies/status
   - backends/status
+  - virtualbackends/status
   verbs:
   - update
 - apiGroups:

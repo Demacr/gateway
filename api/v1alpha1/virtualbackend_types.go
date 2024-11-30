@@ -5,7 +5,9 @@
 
 package v1alpha1
 
-import metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+import (
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
 
 const (
 	// KindVirtualBackend is the name of the VirtualBackend kind.
@@ -21,6 +23,7 @@ type ResponseHeader string
 
 // +kubebuilder:object:root=true
 // +kubebuilder:resource:categories=envoy-gateway,shortName=vb
+// +kubebuilder:subresource:status
 //
 // VirtualBackend defines the configuration for direct response.
 type VirtualBackend struct {
@@ -29,6 +32,20 @@ type VirtualBackend struct {
 
 	// Spec defines desired state of VirtualBackend.
 	Spec VirtualBackendSpec `json:"spec"`
+
+	// Status defines the current status of SecurityPolicy.
+	Status VirtualBackendStatus `json:"status,omitempty"`
+}
+
+// VirtualBackendStatus defines the state of virtualbackend
+type VirtualBackendStatus struct {
+	// Conditions describe the current conditions of the Backend.
+	//
+	// +optional
+	// +listType=map
+	// +listMapKey=type
+	// +kubebuilder:validation:MaxItems=8
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 // +kubebuilder:validation:XValidation:rule="has(self.statusCode)"
@@ -38,7 +55,7 @@ type VirtualBackendSpec struct {
 	// +optional
 	//
 	// Body contains data which gateway returns in direct response.
-	Body *[]byte `json:"body,omitempty" yaml:"body,omitempty"`
+	Body []byte `json:"body,omitempty" yaml:"body,omitempty"`
 
 	// +kubebuilder:default=200
 	//
@@ -49,4 +66,17 @@ type VirtualBackendSpec struct {
 	//
 	// ResponseHeaders defines Header:Value map of additional headers to response.
 	ResponseHeaders map[ResponseHeader]string `json:"responseHeaders,omitempty" yaml:"responseHeaders,omitempty"`
+}
+
+// +kubebuilder:object:root=true
+//
+// VirtualBackendList contains a list of VirtualBackend resources.
+type VirtualBackendList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty"`
+	Items           []VirtualBackend `json:"items"`
+}
+
+func init() {
+	SchemeBuilder.Register(&VirtualBackend{}, &VirtualBackendList{})
 }

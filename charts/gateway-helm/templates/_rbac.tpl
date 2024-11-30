@@ -71,6 +71,7 @@ resources:
 - securitypolicies
 - envoyextensionpolicies
 - backends
+- virtualbackends
 verbs:
 - get
 - list
@@ -87,6 +88,7 @@ resources:
 - securitypolicies/status
 - envoyextensionpolicies/status
 - backends/status
+- virtualbackends/status
 verbs:
 - update
 {{- end }}

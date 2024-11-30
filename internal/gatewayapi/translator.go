@@ -100,6 +100,9 @@ type Translator struct {
 	// BackendEnabled when the Backend feature is enabled.
 	BackendEnabled bool
 
+	// VirtualBackendEnabled when the VirtualBackend feature is enabled.
+	VirtualBackendEnabled bool
+
 	// ExtensionGroupKinds stores the group/kind for all resources
 	// introduced by an Extension so that the translator can
 	// store referenced resources in the IR for later use.
@@ -194,6 +197,9 @@ func (t *Translator) Translate(resources *Resources) (*TranslateResult, error) {
 
 	// process all Backends
 	backends := t.ProcessBackends(resources.Backends)
+
+	// process all VirtualBackends
+	t.ProcessVirtualBackends(resources.VirtualBackends)
 
 	// Process all relevant HTTPRoutes.
 	httpRoutes := t.ProcessHTTPRoutes(resources.HTTPRoutes, gateways, resources, xdsIR)

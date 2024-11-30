@@ -205,9 +205,13 @@ func (t *Translator) processHTTPRouteRules(httpRoute *HTTPRouteContext, parentRe
 
 			if backendRef.Kind != nil && *backendRef.Kind == egv1a1.KindVirtualBackend {
 				vb := resources.GetVirtualBackend(NamespaceDerefOr(backendRef.Namespace, httpRoute.Namespace), string(backendRef.Name))
+				if vb == nil {
+					return nil, fmt.Errorf("can't find required VirtualBackend resource")
+				}
+
 				for _, route := range ruleRoutes {
 					directResponse := &ir.DirectResponse{
-						Body:       string(*vb.Spec.Body),
+						Body:       vb.Spec.Body,
 						StatusCode: uint32(vb.Spec.StatusCode),
 					}
 
@@ -1274,6 +1278,8 @@ func (t *Translator) processDestination(backendRefContext BackendRefContext,
 			envoyProxy,
 		)
 		ds.Filters = t.processDestinationFilters(routeType, backendRefContext, parentRef, route, resources)
+	case egv1a1.KindVirtualBackend:
+		return nil
 	}
 
 	if err := validateDestinationSettings(ds, t.IsEnvoyServiceRouting(envoyProxy), backendRef.Kind); err != nil {
@@ -1482,7 +1488,7 @@ func (t *Translator) processAllowedListenersForParentRefs(routeContext RouteCont
 		// Its safe to increment AttachedRoutes since we've found a valid parentRef
 		// and the listener allows this Route kind
 
-		// Theoretically there should only be one parent ref per
+		// Theoretically there should by be one parent ref per
 		// Route that attaches to a given Listener, so fine to just increment here, but we
 		// might want to check to ensure we're not double-counting.
 		for _, listener := range allowedListeners {

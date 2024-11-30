@@ -1,0 +1,25 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: http-with-virtual-backend
+  namespace: gateway-conformance-infra
+spec:
+  parentRefs:
+    - name: same-namespace
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /stub
+      backendRefs:
+        - kind: VirtualBackend
+          name: virtual-backend-1
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: VirtualBackend
+metadata:
+  name: virtual-backend-1
+  namespace: gateway-conformance-infra
+spec:
+  statusCode: 527

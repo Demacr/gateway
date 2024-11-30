@@ -423,10 +423,10 @@ func buildXdsURLRewriteAction(destName string, urlRewrite *ir.URLRewrite, pathMa
 func buildXdsDirectResponseAction(res *ir.DirectResponse) *routev3.DirectResponseAction {
 	var directResponseDataSource *corev3.DataSource
 
-	if res.Body != "" {
+	if res.Body != nil {
 		directResponseDataSource = &corev3.DataSource{
-			Specifier: &corev3.DataSource_InlineString{
-				InlineString: res.Body,
+			Specifier: &corev3.DataSource_InlineBytes{
+				InlineBytes: res.Body,
 			},
 		}
 	}

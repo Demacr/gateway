@@ -1213,7 +1213,7 @@ func (h AddHeader) Validate() error {
 // +k8s:deepcopy-gen=true
 type DirectResponse struct {
 	// Body will be used for the direct response's status code.
-	Body string `json:"body,omitempty" yaml:"body,omitempty"`
+	Body []byte `json:"body,omitempty" yaml:"body,omitempty"`
 	// StatusCode will be used for the direct response's status code.
 	StatusCode uint32 `json:"statusCode" yaml:"statusCode"`
 }

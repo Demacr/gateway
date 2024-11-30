@@ -252,6 +252,10 @@ func (r *gatewayAPIReconciler) Reconcile(ctx context.Context, _ reconcile.Reques
 			return reconcile.Result{}, err
 		}
 
+		if err = r.processVirtualBackends(ctx, gwcResource); err != nil {
+			return reconcile.Result{}, err
+		}
+
 		// Add the referenced services, ServiceImports, and EndpointSlices in
 		// the collected BackendRefs to the resourceTree.
 		// BackendRefs are referred by various Route objects and the ExtAuth in SecurityPolicies.
@@ -417,6 +421,19 @@ func (r *gatewayAPIReconciler) processBackendRefs(ctx context.Context, gwcResour
 				resourceMappings.allAssociatedNamespaces[backend.Namespace] = struct{}{}
 				gwcResource.Backends = append(gwcResource.Backends, backend)
 				r.log.Info("added Backend to resource tree", "namespace", string(*backendRef.Namespace),
+					"name", string(backendRef.Name))
+			}
+
+		case egv1a1.KindVirtualBackend:
+			virtualBackend := new(egv1a1.VirtualBackend)
+			err := r.client.Get(ctx, types.NamespacedName{Namespace: string(*backendRef.Namespace), Name: string(backendRef.Name)}, virtualBackend)
+			if err != nil {
+				r.log.Error(err, "failed to get VirtualBackend", "namespace", string(*backendRef.Namespace),
+					"name", string(backendRef.Name))
+			} else {
+				resourceMappings.allAssociatedNamespaces[virtualBackend.Namespace] = struct{}{}
+				gwcResource.VirtualBackends = append(gwcResource.VirtualBackends, virtualBackend)
+				r.log.Info("added VirtualBackend to resource tree", "namespace", string(*backendRef.Namespace),
 					"name", string(backendRef.Name))
 			}
 		}
@@ -988,6 +1005,34 @@ func (r *gatewayAPIReconciler) processBackends(ctx context.Context, resourceTree
 
 		resourceTree.Backends = append(resourceTree.Backends, &backend)
 	}
+	return nil
+}
+
+// processVirtualBackends adds VirtualBackends to the resourceTree
+func (r *gatewayAPIReconciler) processVirtualBackends(ctx context.Context, resourceTree *gatewayapi.Resources) error {
+	virtualBackends := egv1a1.VirtualBackendList{}
+	if err := r.client.List(ctx, &virtualBackends); err != nil {
+		return fmt.Errorf("error listing VirtualBackends: %w", err)
+	}
+
+	r.log.Info("------------processVirtualBackends-------------------")
+	r.log.Info(fmt.Sprintf("%d", len(virtualBackends.Items)))
+	r.log.Info("------------processVirtualBackends-------------------")
+
+	for _, virtualBackend := range virtualBackends.Items {
+		virtualBackend := virtualBackend
+		virtualBackend.Status = egv1a1.VirtualBackendStatus{
+			Conditions: []metav1.Condition{
+				{
+					Status: metav1.ConditionTrue,
+					Type:   "Accepted",
+				},
+			},
+		}
+
+		resourceTree.VirtualBackends = append(resourceTree.VirtualBackends, &virtualBackend)
+	}
+
 	return nil
 }
 

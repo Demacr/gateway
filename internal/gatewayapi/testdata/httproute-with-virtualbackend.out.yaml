@@ -70,10 +70,9 @@ httpRoutes:
         status: "True"
         type: Accepted
       - lastTransitionTime: null
-        message: Kind is invalid, only Service, MCS ServiceImport and Envoy Gateway
-          Backend are supported
-        reason: InvalidKind
-        status: "False"
+        message: Resolved all the Object references for the Route
+        reason: ResolvedRefs
+        status: "True"
         type: ResolvedRefs
       controllerName: gateway.envoyproxy.io/gatewayclass-controller
       parentRef:
@@ -118,7 +117,7 @@ xdsIR:
       port: 10080
       routes:
       - directResponse:
-          body: '{"err": "Some error"}'
+          body: eyJlcnIiOiAiU29tZSBlcnJvciJ9
           statusCode: 501
         hostname: gateway.envoyproxy.io
         isHTTP2: false

@@ -155,7 +155,7 @@ func validateBackendRef(ref *gwapiv1.BackendRef) error {
 		return nil
 	case gatewayapi.GroupDerefOr(ref.Group, corev1.GroupName) != corev1.GroupName && gatewayapi.GroupDerefOr(ref.Group, corev1.GroupName) != mcsapiv1a1.GroupName && gatewayapi.GroupDerefOr(ref.Group, corev1.GroupName) != egv1a1.GroupName:
 		return fmt.Errorf("invalid group; must be nil, empty string %q or %q", mcsapiv1a1.GroupName, egv1a1.GroupName)
-	case gatewayapi.KindDerefOr(ref.Kind, gatewayapi.KindService) != gatewayapi.KindService && gatewayapi.KindDerefOr(ref.Kind, gatewayapi.KindService) != gatewayapi.KindServiceImport && gatewayapi.KindDerefOr(ref.Kind, gatewayapi.KindService) != egv1a1.KindBackend:
+	case gatewayapi.KindDerefOr(ref.Kind, gatewayapi.KindService) != gatewayapi.KindService && gatewayapi.KindDerefOr(ref.Kind, gatewayapi.KindService) != gatewayapi.KindServiceImport && gatewayapi.KindDerefOr(ref.Kind, gatewayapi.KindService) != egv1a1.KindBackend && gatewayapi.KindDerefOr(ref.Kind, gatewayapi.KindService) != egv1a1.KindVirtualBackend:
 		return fmt.Errorf("invalid kind %q; must be %q, %q or %q",
 			*ref.BackendObjectReference.Kind, gatewayapi.KindService, gatewayapi.KindServiceImport, egv1a1.KindBackend)
 	}
